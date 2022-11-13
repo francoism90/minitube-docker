@@ -19,7 +19,6 @@ services:
       - ./nginx/sites:/etc/nginx/sites:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
       - ./src:/usr/share/nginx
-      - ./storage:/storage
     networks:
       - bridge
     depends_on:
