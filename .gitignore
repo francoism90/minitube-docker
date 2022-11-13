@@ -1,8 +1,9 @@
-/nginx/*.crt
-/nginx/*.key
-/nginx/*.pem
+*.crt
+*.key
+*.pem
 /node_modules
 /public
+/src
 /storage
 /vendor
 .env
