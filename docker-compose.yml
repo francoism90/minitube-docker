@@ -9,8 +9,9 @@ services:
       - 'host.docker.internal:host-gateway'
     ports:
       - '80:80'
+      - '443:443'
     volumes:
-      - './src/public:/usr/share/nginx/html'
+      - './storage:/storage'
     networks:
       - bridge
     depends_on:
