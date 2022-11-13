@@ -53,6 +53,6 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod +x /usr/local/bin/start-container
 
 EXPOSE 80
-# EXPOSE 443
+EXPOSE 443
 
 ENTRYPOINT ["start-container"]
