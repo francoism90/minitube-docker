@@ -1,3 +1,6 @@
+/nginx/*.crt
+/nginx/*.key
+/nginx/*.pem
 /node_modules
 /public
 /storage
