@@ -2,10 +2,15 @@ FROM fedora:latest
 
 LABEL maintainer="Francois Menning"
 
+ARG USERNAME=www-data
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
 ARG NGX_VERSION=nginx-1.22.1-1.fc36
 
-RUN useradd -ms /bin/bash -u 1337 www-data
-WORKDIR /usr/share/nginx
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME
+
+WORKDIR /home/$USERNAME
 
 ENV TZ=UTC
 
@@ -14,7 +19,8 @@ RUN echo "fastestmirror=true" >> /etc/dnf/dnf.conf
 
 RUN dnf update -y \
     && dnf install -y curl zip unzip git \
-    && dnf install -y ffmpeg-free jpegoptim optipng pngquant gifsicle \
+    && dnf install -y ffmpeg-free libavcodec-free libswscale-free libavfilter-free \
+    && dnf install -y jpegoptim optipng pngquant gifsicle \
     && dnf install -y nginx nginx-mod-devel \
     && dnf install -y php-cli php-devel php-fpm \
     php-pdo php-mbstring php-json \
@@ -54,5 +60,7 @@ RUN chmod +x /usr/local/bin/start-container
 
 EXPOSE 80
 EXPOSE 443
+
+USER $USERNAME
 
 ENTRYPOINT ["start-container"]
