@@ -1,11 +1,14 @@
-FROM php:8.1.12-fpm-alpine
+FROM php:fpm-alpine
 
-LABEL maintainer="Francois Menning"
+WORKDIR /app
 
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS
 
 RUN apk add --no-cache --virtual .run-deps \
-    libcap \
+    composer \
+    nodejs \
+    npm \
+    supervisor \
     libjpeg-turbo-dev \
     libpng-dev \
     freetype-dev \
@@ -26,3 +29,11 @@ RUN apk add --no-cache --virtual .run-deps \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd \
     && apk del .build-deps
+
+COPY start-container /usr/local/bin/start-container
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN chmod +x /usr/local/bin/start-container
+
+ENTRYPOINT ["start-container"]
+
+CMD ["php-fpm"]
