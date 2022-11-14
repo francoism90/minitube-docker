@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-if [ ! -z "$WWWUSER" ]; then
-    usermod -u $WWWUSER www-data
+if [ ! -z "$USERNAME" ]; then
+    usermod -u $USERNAME www-data
 fi
 
 if [ $# -gt 0 ]; then
-    exec su-exec $WWWUSER "$@"
+    exec su-exec $USERNAME "$@"
 else
     /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 fi
