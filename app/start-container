@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-if [ ! -z "$USER" ]; then
-    usermod -u $USER me
-fi
-
-if [ $# -gt 0 ]; then
-    exec su-exec me "$@"
-fi

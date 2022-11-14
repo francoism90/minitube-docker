@@ -2,10 +2,6 @@ FROM php:8.1.12-fpm-alpine
 
 LABEL maintainer="Francois Menning"
 
-ARG USER=me
-ARG UID=1000
-ARG GID=$UID
-
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS
 
 RUN apk add --no-cache --virtual .run-deps \
@@ -30,18 +26,3 @@ RUN apk add --no-cache --virtual .run-deps \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd \
     && apk del .build-deps
-
-RUN setcap "cap_net_bind_service=+ep" $(which php) \
-    && setcap "cap_net_bind_service=+ep" $(which php-fpm)
-
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --no-create-home \
-    --uid "$UID" \
-    "$USER"
-
-RUN mkdir -p /data \
-    && chown $UID:$UID /data
-
-USER $USER
