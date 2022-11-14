@@ -44,12 +44,13 @@ RUN cd /usr/local/src \
     && make \
     && make install
 
-# FROM nginx:alpine
-# COPY --from=builder /usr/local/nginx/modules/ngx_http_vod_module.so /usr/local/nginx/modules/ngx_http_vod_module.so
+FROM nginx:alpine
+COPY --from=builder /usr/local/nginx/modules/ngx_http_vod_module.so /usr/local/nginx/modules/ngx_http_vod_module.so
+COPY --from=builder /usr/local/nginx/modules/ngx_http_secure_token_filter_module.so /usr/local/nginx/modules/ngx_http_secure_token_filter_module.so
 
-# EXPOSE 80
-# EXPOSE 443
+EXPOSE 80
+EXPOSE 443
 
-# STOPSIGNAL SIGQUIT
+STOPSIGNAL SIGQUIT
 
-# CMD ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]
