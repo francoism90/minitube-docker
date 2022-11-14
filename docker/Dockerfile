@@ -1,12 +1,11 @@
 FROM nginx:alpine AS builder
 
-WORKDIR /tmp
+WORKDIR /usr/local/src
 
-RUN wget "http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -O nginx.tar.gz \
-    && wget "https://github.com/kaltura/nginx-vod-module/archive/master.tar.gz" -O kaltura-nginx-vod.tar.gz \
-    && wget "https://github.com/kaltura/nginx-secure-token-module/archive/master.tar.gz" -O kaltura-nginx-secure-token.tar.gz
+RUN wget "http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz" -O nginx.tar.gz
 
 RUN apk add --no-cache --virtual .build-deps \
+    git \
     gcc \
     libc-dev \
     make \
@@ -26,22 +25,27 @@ RUN apk add --no-cache --virtual .build-deps \
 
 RUN set -x \
     && tar xzvf nginx.tar.gz \
-    && tar xzvf kaltura-nginx-vod.tar.gz \
-    && tar xzvf kaltura-nginx-secure-token.tar.gz \
-    && export MODULEDIR="$(pwd)/kaltura-nginx-vod"
+    && mv /usr/local/src/nginx-${NGINX_VERSION} /usr/local/src/nginx \
+    && mkdir -p /usr/lib/nginx/modules
 
-RUN cd /tmp/nginx-${NGINX_VERSION} \
+RUN cd /usr/local/src \
+    && git clone --depth 1 https://github.com/kaltura/nginx-vod-module.git \
+    && MODULEDIR=$(pwd)/nginx-vod-module \
+    && cd /usr/local/src/nginx \
     && ./configure --with-compat $CONFARGS --add-dynamic-module=$MODULEDIR --with-file-aio --with-threads --with-cc-opt="-O3" \
     && make \
     && make install
 
-# RUN cd /tmp/nginx-${NGINX_VERSION} \
-#     && ./configure --with-compat $CONFARGS --add-dynamic-module="$MODULEDIR/kaltura-nginx-secure-token" --with-cc-opt="-O3" \
-#     && make \
-#     && make install
+RUN cd /usr/local/src \
+    && git clone --depth 1 https://github.com/kaltura/nginx-secure-token-module.git \
+    && MODULEDIR=$(pwd)/nginx-secure-token-module \
+    && cd /usr/local/src/nginx \
+    && ./configure --with-compat $CONFARGS --add-dynamic-module=$MODULEDIR --with-cc-opt="-O3" \
+    && make \
+    && make install
 
 # FROM nginx:alpine
-# COPY --from=builder /usr/local/nginx/modules/ngx_vod_module.so /usr/local/nginx/modules/ngx_vod_module.so
+# COPY --from=builder /usr/local/nginx/modules/ngx_http_vod_module.so /usr/local/nginx/modules/ngx_http_vod_module.so
 
 # EXPOSE 80
 # EXPOSE 443
