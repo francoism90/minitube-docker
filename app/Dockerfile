@@ -1,4 +1,4 @@
-FROM php:fpm-alpine
+FROM php:8.1.12-fpm-alpine
 
 WORKDIR /app
 
@@ -11,6 +11,7 @@ RUN apk add --no-cache --virtual .run-deps \
     supervisor \
     libjpeg-turbo-dev \
     libpng-dev \
+    libxml2-dev \
     freetype-dev \
     imagemagick-dev \
     zlib-dev \
@@ -23,11 +24,13 @@ RUN apk add --no-cache --virtual .run-deps \
     && pecl install imagick \
     && pecl install redis \
     && docker-php-ext-enable imagick \
-    && docker-php-ext-enable redis \
     && docker-php-ext-enable opcache \
-    && docker-php-ext-enable imagick \
+    && docker-php-ext-enable redis \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install fileinfo \
+    && docker-php-ext-install pcntl \
+    && docker-php-ext-install simplexml \
     && apk del .build-deps
 
 COPY start-container /usr/local/bin/start-container
