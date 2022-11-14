@@ -51,7 +51,3 @@ RUN adduser \
 
 RUN mkdir -p /data \
     && chown $UID:$UID /data
-
-COPY www.conf /usr/local/etc/php-fpm.d/www.conf
-
-USER $USER
