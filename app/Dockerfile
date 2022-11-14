@@ -19,7 +19,7 @@ RUN apk add --no-cache --virtual .run-deps \
     libcap \
     libjpeg-turbo-dev \
     libpng-dev \
-    freetype \
+    freetype-dev \
     imagemagick-dev \
     zlib-dev \
     jpegoptim \
