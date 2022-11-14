@@ -1,10 +1,15 @@
 FROM php:8.1.12-fpm-alpine
 
-WORKDIR /data
+ARG USER=me
+ARG UID=1000
+ARG GID=$UID
+
+WORKDIR /app
 
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS
 
 RUN apk add --no-cache --virtual .run-deps \
+    libcap \
     nodejs \
     npm \
     supervisor \
@@ -34,10 +39,19 @@ RUN apk add --no-cache --virtual .run-deps \
     && docker-php-ext-install simplexml \
     && apk del .build-deps
 
-COPY start-container /usr/local/bin/start-container
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-RUN chmod +x /usr/local/bin/start-container
+RUN setcap "cap_net_bind_service=+ep" $(which php) \
+    && setcap "cap_net_bind_service=+ep" $(which php-fpm)
 
-ENTRYPOINT ["start-container"]
+RUN adduser \
+    --disabled-password \
+    --gecos "" \
+    --no-create-home \
+    --uid "$UID" \
+    "$USER"
 
-CMD ["php-fpm"]
+RUN mkdir -p /data \
+    && chown $UID:$UID /data
+
+COPY www.conf /usr/local/etc/php-fpm.d/www.conf
+
+USER $USER

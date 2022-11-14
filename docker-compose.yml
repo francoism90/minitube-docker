@@ -31,7 +31,7 @@ services:
       - ./nginx/config:/etc/nginx/config:ro
       - ./nginx/sites:/etc/nginx/sites:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
-      - ./src:/srv/http
+      - ./src:/data
     networks:
       - bridge
   mariadb:
