@@ -1,11 +1,10 @@
 FROM php:8.1.12-fpm-alpine
 
-WORKDIR /app
+WORKDIR /data
 
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS
 
 RUN apk add --no-cache --virtual .run-deps \
-    composer \
     nodejs \
     npm \
     supervisor \
@@ -21,13 +20,15 @@ RUN apk add --no-cache --virtual .run-deps \
     gifsicle \
     ffmpeg \
     && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
+    && php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer \
     && pecl install imagick \
     && pecl install redis \
     && docker-php-ext-enable imagick \
     && docker-php-ext-enable opcache \
     && docker-php-ext-enable redis \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install gd \
+    && docker-php-ext-install exif \
     && docker-php-ext-install fileinfo \
     && docker-php-ext-install pcntl \
     && docker-php-ext-install simplexml \
