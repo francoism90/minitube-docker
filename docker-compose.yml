@@ -2,12 +2,13 @@ version: '3'
 
 services:
   app:
-    user: '1000:1000'
     build:
       context: ./app
       dockerfile: Dockerfile
+    user: '1000:1000'
+    tty: true
     volumes:
-      - ./src:/srv/http
+      - ./src:/data
     networks:
       - bridge
     depends_on:

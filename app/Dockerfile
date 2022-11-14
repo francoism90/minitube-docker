@@ -4,14 +4,7 @@ LABEL maintainer="Francois Menning"
 
 ARG USER=me
 ARG UID=1000
-ARG GID=$USER_UID
-
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --no-create-home \
-    --uid "$UID" \
-    "$USER"
+ARG GID=$UID
 
 RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS
 
@@ -41,4 +34,14 @@ RUN apk add --no-cache --virtual .run-deps \
 RUN setcap "cap_net_bind_service=+ep" $(which php) \
     && setcap "cap_net_bind_service=+ep" $(which php-fpm)
 
-USER me
+RUN adduser \
+    --disabled-password \
+    --gecos "" \
+    --no-create-home \
+    --uid "$UID" \
+    "$USER"
+
+RUN mkdir -p /data \
+    && chown $UID:$UID /data
+
+USER $USER
