@@ -25,8 +25,7 @@ RUN apk add --no-cache --virtual .build-deps \
 
 RUN set -x \
     && tar xzvf nginx.tar.gz \
-    && mv /usr/local/src/nginx-${NGINX_VERSION} /usr/local/src/nginx \
-    && mkdir -p /usr/lib/nginx/modules
+    && mv /usr/local/src/nginx-${NGINX_VERSION} /usr/local/src/nginx
 
 RUN cd /usr/local/src \
     && git clone --depth 1 https://github.com/kaltura/nginx-vod-module.git \
