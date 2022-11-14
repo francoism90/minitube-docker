@@ -2,8 +2,28 @@ version: '3'
 
 services:
   app:
+    user: '1000:1000'
     build:
-      context: ./docker
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - '80:80'
+      - '443:443'
+      - '1935:1935'
+      - '3000:3000'
+    volumes:
+      - ./src:/srv/http
+    networks:
+      - bridge
+    depends_on:
+      - nginx
+      - mariadb
+      - redis
+      - meilisearch
+      - soketi
+  nginx:
+    build:
+      context: ./nginx
       dockerfile: Dockerfile
     extra_hosts:
       - 'host.docker.internal:host-gateway'
@@ -21,11 +41,6 @@ services:
       - ./src:/srv/http
     networks:
       - bridge
-    depends_on:
-      - mariadb
-      - redis
-      - meilisearch
-      - soketi
   mariadb:
     image: mariadb:latest
     ports:
