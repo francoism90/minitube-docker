@@ -50,4 +50,4 @@ RUN adduser \
     "$USER"
 
 RUN mkdir -p /data \
-    && chown $UID:$UID /data
+    && chown $UID:$GID /data
