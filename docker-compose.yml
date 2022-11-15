@@ -16,6 +16,19 @@ services:
       - redis
       - meilisearch
       - soketi
+  horizon:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    user: ${UID:-1000}:${GID:-1000}
+    working_dir: /data/api
+    command: php artisan horizon
+    volumes:
+      - ./src:/data
+    networks:
+      - bridge
+    depends_on:
+      - app
   nginx:
     build:
       context: ./nginx
