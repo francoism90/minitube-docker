@@ -26,8 +26,10 @@ RUN apk add --no-cache --virtual .run-deps \
     ffmpeg \
     && cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
     && php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer \
+    && pecl install apcu \
     && pecl install imagick \
     && pecl install redis \
+    && docker-php-ext-enable apcu \
     && docker-php-ext-enable imagick \
     && docker-php-ext-enable opcache \
     && docker-php-ext-enable redis \
@@ -41,6 +43,8 @@ RUN apk add --no-cache --virtual .run-deps \
 
 RUN setcap "cap_net_bind_service=+ep" $(which php) \
     && setcap "cap_net_bind_service=+ep" $(which php-fpm)
+
+COPY www.conf /usr/local/etc/php-fpm.d/www.conf
 
 RUN adduser \
     --disabled-password \
