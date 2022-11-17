@@ -21,7 +21,8 @@ RUN apk add --no-cache --virtual .build-deps \
     bash \
     alpine-sdk \
     findutils \
-    ffmpeg
+    ffmpeg \
+    ffmpeg-dev
 
 RUN set -x \
     && tar xzvf nginx.tar.gz \
@@ -31,7 +32,7 @@ RUN cd /usr/local/src \
     && git clone --depth 1 https://github.com/kaltura/nginx-vod-module.git \
     && MODULEDIR=$(pwd)/nginx-vod-module \
     && cd /usr/local/src/nginx \
-    && ./configure --with-compat $CONFARGS --add-dynamic-module=$MODULEDIR --with-file-aio --with-threads --with-cc-opt="-O3" \
+    && ./configure --with-compat $CONFARGS --add-dynamic-module=$MODULEDIR --with-debug --with-file-aio --with-threads --with-cc-opt="-O3" \
     && make \
     && make install
 
@@ -39,7 +40,7 @@ RUN cd /usr/local/src \
     && git clone --depth 1 https://github.com/kaltura/nginx-secure-token-module.git \
     && MODULEDIR=$(pwd)/nginx-secure-token-module \
     && cd /usr/local/src/nginx \
-    && ./configure --with-compat $CONFARGS --add-dynamic-module=$MODULEDIR --with-cc-opt="-O3" \
+    && ./configure --with-compat $CONFARGS --add-dynamic-module=$MODULEDIR --with-debug --with-cc-opt="-O3" \
     && make \
     && make install
 
@@ -52,4 +53,4 @@ EXPOSE 443
 
 STOPSIGNAL SIGQUIT
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["nginx-debug", "-g", "daemon off;"]
