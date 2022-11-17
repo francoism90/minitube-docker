@@ -10,6 +10,7 @@ RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS
 
 RUN apk add --no-cache --virtual .run-deps \
     libcap \
+    mysql-client \
     nodejs \
     npm \
     supervisor \
