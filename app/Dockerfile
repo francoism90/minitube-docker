@@ -16,7 +16,10 @@ RUN apk add --no-cache --virtual .run-deps \
     libjpeg-turbo-dev \
     libpng-dev \
     libxml2-dev \
+    libzip-dev \
     freetype-dev \
+    icu-dev \
+    oniguruma-dev \
     imagemagick-dev \
     zlib-dev \
     jpegoptim \
@@ -34,11 +37,15 @@ RUN apk add --no-cache --virtual .run-deps \
     && docker-php-ext-enable opcache \
     && docker-php-ext-enable redis \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd \
     && docker-php-ext-install exif \
     && docker-php-ext-install fileinfo \
+    && docker-php-ext-install gd \
+    && docker-php-ext-install intl \
+    && docker-php-ext-install mbstring \
     && docker-php-ext-install pcntl \
+    && docker-php-ext-install pdo_mysql \
     && docker-php-ext-install simplexml \
+    && docker-php-ext-install zip \
     && apk del .build-deps
 
 RUN setcap "cap_net_bind_service=+ep" $(which php) \
