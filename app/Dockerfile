@@ -38,6 +38,7 @@ RUN apk add --no-cache --virtual .run-deps \
     && docker-php-ext-enable opcache \
     && docker-php-ext-enable redis \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install bcmath \
     && docker-php-ext-install exif \
     && docker-php-ext-install fileinfo \
     && docker-php-ext-install gd \
