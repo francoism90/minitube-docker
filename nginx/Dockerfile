@@ -21,8 +21,9 @@ RUN apk add --no-cache --virtual .build-deps \
     bash \
     alpine-sdk \
     findutils \
+    ffmpeg-dev \
     ffmpeg \
-    ffmpeg-dev
+    ffmpeg-libs
 
 RUN set -x \
     && tar xzvf nginx.tar.gz \
@@ -42,11 +43,16 @@ RUN cd /usr/local/src \
     && cd /usr/local/src/nginx \
     && ./configure --with-compat $CONFARGS --add-dynamic-module=$MODULEDIR --with-debug --with-cc-opt="-O3" \
     && make \
-    && make install
+    && make install \
+    && apk del .build-deps
 
 FROM nginx:alpine
 COPY --from=builder /usr/local/nginx/modules/ngx_http_vod_module.so /usr/local/nginx/modules/ngx_http_vod_module.so
 COPY --from=builder /usr/local/nginx/modules/ngx_http_secure_token_filter_module.so /usr/local/nginx/modules/ngx_http_secure_token_filter_module.so
+
+RUN apk add --no-cache --virtual .run-deps \
+    ffmpeg \
+    ffmpeg-libs
 
 EXPOSE 80
 EXPOSE 443
