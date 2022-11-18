@@ -59,4 +59,4 @@ EXPOSE 443
 
 STOPSIGNAL SIGQUIT
 
-CMD ["nginx-debug", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]
