@@ -1,4 +1,6 @@
-FROM nginx:alpine AS builder
+FROM nginxinc/nginx-unprivileged:mainline-alpine AS builder
+
+USER root
 
 WORKDIR /usr/local/src
 
@@ -46,7 +48,10 @@ RUN cd /usr/local/src \
     && make install \
     && apk del .build-deps
 
-FROM nginx:alpine
+FROM nginxinc/nginx-unprivileged:mainline-alpine
+
+USER root
+
 COPY --from=builder /usr/local/nginx/modules/ngx_http_vod_module.so /usr/local/nginx/modules/ngx_http_vod_module.so
 COPY --from=builder /usr/local/nginx/modules/ngx_http_secure_token_filter_module.so /usr/local/nginx/modules/ngx_http_secure_token_filter_module.so
 
@@ -54,9 +59,11 @@ RUN apk add --no-cache --virtual .run-deps \
     ffmpeg \
     ffmpeg-libs
 
-EXPOSE 80
-EXPOSE 443
+EXPOSE 8080
+EXPOSE 4443
 
 STOPSIGNAL SIGQUIT
+
+USER $UID
 
 CMD ["nginx", "-g", "daemon off;"]
