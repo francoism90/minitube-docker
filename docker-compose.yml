@@ -17,6 +17,20 @@ services:
       - redis
       - meilisearch
       - nginx
+  schedule:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    user: ${UID:-1000}:${GID:-1000}
+    working_dir: /data/api
+    command: php artisan schedule:work
+    volumes:
+      - ./src:/data
+      - /mnt/data-private/minitube:/storage
+    networks:
+      - bridge
+    depends_on:
+      - app
   horizon:
     build:
       context: ./app
