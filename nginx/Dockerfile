@@ -25,7 +25,22 @@ RUN apk add --no-cache --virtual .build-deps \
     findutils \
     ffmpeg-dev \
     ffmpeg \
-    ffmpeg-libs
+    ffmpeg-libs \
+    fdk-aac \
+    gsm \
+    libass \
+    libjpeg \
+    libtheora \
+    libva \
+    libva-glx \
+    libva-vdpau-driver \
+    libvorbis \
+    libvpx \
+    libxcb-dev \
+    speex \
+    x264-libs \
+    x265-libs \
+    xvidcore
 
 RUN set -x \
     && tar xzvf nginx.tar.gz \
@@ -57,7 +72,22 @@ COPY --from=builder /usr/local/nginx/modules/ngx_http_secure_token_filter_module
 
 RUN apk add --no-cache --virtual .run-deps \
     ffmpeg \
-    ffmpeg-libs
+    ffmpeg-libs \
+    fdk-aac \
+    gsm \
+    libass \
+    libjpeg \
+    libtheora \
+    libva \
+    libva-glx \
+    libva-vdpau-driver \
+    libvorbis \
+    libvpx \
+    libxcb \
+    speex \
+    x264 \
+    x265 \
+    xvidcore
 
 EXPOSE 8080
 EXPOSE 4443
