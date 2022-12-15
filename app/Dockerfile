@@ -1,4 +1,4 @@
-FROM php:8.1.12-fpm-alpine
+FROM php:8.1.13-fpm-alpine
 
 ARG USER=me
 ARG UID=1000
@@ -13,7 +13,6 @@ RUN apk add --no-cache --virtual .run-deps \
     mysql-client \
     nodejs \
     npm \
-    supervisor \
     libjpeg-turbo-dev \
     libpng-dev \
     libxml2-dev \
